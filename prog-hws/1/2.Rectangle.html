@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+
+<head>
+
+<title>
+  Rectangle
+</title>
+
+<style> 
+form {
+font-size:100%;
+color:black;
+text-align:center
+}
+</style>
+
+</head>
+
+<body style="background-color:#EB984E;">
+
+<h1 style="font-size:300%;color:black;text-align:left;">RECTANGLE</h1>
+
+<form action="rect" style="text-align:left">
+
+  <b> Enter the X coordinate: </b> <input type="text" id="x-axis" >
+  <b> Enter the Y coordinate: </b> <input type="text" id="y-axis">
+  <b> Length of the rectangle: </b> <input type="text" id="length" >
+  <b> Breadth of the rectangle: </b> <input type="text" id="breadth" ><br>
+  <br>
+  <b> Border width of the rectangle: </b> <select id="width">
+      <option value="4"> Default </option>
+      <option value="8"> 8 </option>
+      <option value="12"> 12 </option>
+      <option value="16"> 16 </option>
+      <option value="20"> 20 </option>
+      <option value="24"> 24 </option>
+  </select>
+<b> Border color of the rectangle: </b> <select id="color">
+      <option value="#000000"> Default </option>
+      <option value="#FF0000"> Red </option>
+      <option value="#FFFF00"> Yellow </option>
+      <option value="#F39C12"> Orange </option>
+      <option value="#3498DB"> Blue </option>
+   </select>
+<br> <br> 
+  <strong> <input type="button" value="Draw" onclick="rectangle()" style="font-size:70%;color:darkblue;"> </strong>
+  <strong> <input type="button" value="Clear" onclick="clr()"style="font-size:70%;color:darkblue;"></strong>
+
+</form>
+
+<canvas id="canvas" width="1200" height="500" style="border:5px solid #000000; background-color:white;cursor:crosshair;" >
+</canvas>
+
+<script>
+
+var canvas=document.getElementById("canvas");
+var ctx= canvas.getContext('2d');
+
+function rectangle() {
+
+var X=document.getElementById("x-axis").value;
+var Y=document.getElementById("y-axis").value;
+var len=document.getElementById("length").value;
+var breadth=document.getElementById("breadth").value;
+
+ctx.strokeStyle=document.getElementById("color").value;
+ctx.rect(X,Y,len,breadth);
+ctx.stroke();
+ctx.lineWidth=document.getElementById("width").value;
+}
+
+function clr() {
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+</script>
+
+</body>
+
+</html>
+
