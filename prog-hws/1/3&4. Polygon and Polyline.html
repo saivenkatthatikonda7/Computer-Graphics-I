@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+<title>
+  Polygon and Polyline
+</title>
+
+<style> 
+form {
+font-size:100%;
+color:black;
+text-align:left
+}
+</style>
+</head>
+
+<body style="background-color:#EB984E;">
+
+<h1 style="font-size:300%;color:black;text-align:left;">Polygon and Polylines</h1>
+
+<form>
+  <h1> For Polygon :</h1><b> Number of sides in the polygon</b> <input type="text" id="sides" >
+  <b> Enter length of the side: </b> <input type="text" id="length" >
+  <h1> For Polylines :</h1><b> Number of points in the polylines</b> <input type="text" id="points" >
+  <b> Enter length of the side: </b> <input type="text" id="length1" >
+  <br><br><br><br>
+  <b> Width of the line: </b> <select id="width">
+      <option value="4"> Default </option>
+      <option value="8"> 8 </option>
+      <option value="12"> 12 </option>
+      <option value="16"> 16 </option>
+      <option value="20"> 20 </option>
+      <option value="24"> 24 </option>
+  </select>
+<b> Color of the line: </b> <select id="color">
+      <option value="#000000"> Default </option>
+      <option value="#FF0000"> Red </option>
+      <option value="#FFFF00"> Yellow </option>
+      <option value="#F39C12"> Orange </option>
+      <option value="#3498DB"> Blue </option>
+   </select>
+  <br><br>
+  <strong> <input type="button" value="POLYGON" onclick="polygon()"style="font-size:100%;color:black;"></strong>
+  <strong> <input type="button" value="POLYLINE" onclick="polyline()"style="font-size:100%;color:black;"></strong>
+  <strong> <input type="button" value="CLEAR" onclick="clr()"style="font-size:100%;color:black;"></strong>
+
+</form>
+
+<canvas id="canvas" width="1200" height="470" style="border:5px solid #000000; background-color:white;cursor:crosshair;" >
+</canvas>
+
+<script>
+
+var canvas=document.getElementById('canvas');
+var ctx= canvas.getContext('2d');
+
+function polygon() {
+
+var side=document.getElementById('sides').value;
+var len=document.getElementById('length').value;
+var X= canvas.width/2;
+var Y=canvas.height/2;
+ctx.beginPath();
+ctx.moveTo(X+len*Math.cos(0),Y+len*Math.sin(0));       
+for (var i=1;i<=side;i++) 
+{
+ctx.lineTo (X + len * Math.cos(i * 2 * Math.PI/side), Y + len * Math.sin(i * 2 * Math.PI / side));
+}
+ctx.lineWidth=document.getElementById("width").value;
+ctx.strokeStyle=document.getElementById("color").value;
+ctx.stroke();
+}
+
+function polyline() {
+
+var n=document.getElementById('points').value;
+var len=document.getElementById('length1').value;
+ctx.beginPath();
+for (var i=1;i<=n;i++) 
+{
+var X=Math.random()*len;
+var Y=Math.random()*len;
+ctx.lineTo(X,Y);
+}
+ctx.lineWidth=document.getElementById("width").value;
+ctx.strokeStyle=document.getElementById("color").value;
+ctx.stroke();
+}
+
+function clr() {
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+</script>
+
+</body>
+
+</html>
+
+
