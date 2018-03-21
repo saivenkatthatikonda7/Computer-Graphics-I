@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title> Fractal</title>
+<style>
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+</style>
+
+</head>
+<body background="marble.jpg">
+<h1 style="text-align:left;font-size:300;">Fractal</h1> 
+<label class="container">Line
+  <input type="radio" name="shape" >
+  <span class="checkmark"></span>
+</label>
+<label class="container">Triangle
+  <input type="radio" name="shape" >
+  <span class="checkmark"></span>
+</label>
+
+<label class="container">Arc
+  <input type="radio" name="shape">
+  <span class="checkmark"></span>
+</label>
+<label class="container">Square
+  <input type="radio" name="shape">
+  <span class="checkmark"></span>
+</label>
+
+
+
+  ratio: <input type="number"  id="rat"> "Just Give A Whole Number for Example:|__2__| which will be taken as |__1/2__|<br>
+  iterations: <input type="number" id="itr"><br>
+  <br/><br/>
+<b> Border color: </b> <input type="number" id="width" value=1>      <br><br>
+
+
+<b> Border color: </b> <input type="color" id="color" value="#ff0000">      <br><br>
+<input type="submit" value="draw" onclick="selectline()">
+ <input type="submit" value="clear" onclick="erase()">
+
+<h2 id="status"> 0 | 0 </h2>
+
+<br>
+
+<canvas id='canvas' style='border:2px solid black; background-color:white; width:750px;  height:500px; cursor:crosshair;'>
+</canvas>
+
+
+
+<script>
+
+
+var canvas = document.getElementById("canvas"),
+context = canvas.getContext("2d"),
+width= canvas.width= window.innerWidth,
+height=canvas.height = window.innerHeight;
+function selectline(){
+erase();
+var p0 = {
+     x:50,
+     y: height * .75
+},
+p1 = { 
+     x:width - 50,
+     y: height * .75
+},
+p2 = {
+     x:275,
+     y:height * .25
+};
+
+var ratio=document.getElementById("rat").value;
+var iterations= document.getElementById("itr").value;
+var selected= document.getElementsByName('shape');
+if(selected[0].checked)
+{ switchno=0; }
+else if(selected[1].checked)
+{ switchno=1; }
+else if(selected[2].checked)
+{ switchno = 2 ; }
+else
+{
+switchno=3;
+} 
+
+
+if(switchno==0){
+frac(p0,p1,ratio,iterations);
+}
+else if(switchno==1)
+{
+triangle();
+ }
+else if(switchno==2)
+{
+arc(context,[[5,4],[8,7]]);
+}
+else if(switchno==3)
+{
+square();
+}
+
+}
+
+
+function erase(){
+context.save();
+context.setTransform(1, 0, 0, 1, 0, 0);
+context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+
+function frac(p0,p1,ratio,iterations) {
+
+if(iterations==0){
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+
+}
+else if(ratio > 2)
+{
+var dx = parseInt(p1.x - p0.x),
+ dy= parseInt(p1.y-p0.y),
+dist = parseInt(Math.sqrt( dx * dx + dy* dy)),
+unit = parseInt(dist /ratio) ,
+angle = Math.atan2(dy,dx),
+pA= { 
+   x: parseInt(p0.x + dx/ratio),
+   y: parseInt(p0.y + dy/ratio)
+    },
+pC= {
+   x: parseInt(p1.x - dx/ratio),
+   y:parseInt(p1.y - dy/ratio)
+},
+
+pB= {
+    x:  parseInt(pA.x + Math.cos(angle - Math.PI / ratio) * unit),
+    y: parseInt(pA.y + Math.sin(angle - Math.PI / ratio ) * unit)
+
+}; 
+
+
+
+
+
+if(iterations >1){
+frac(p0,pA,ratio,iterations-1)
+frac(pA,pB,ratio,iterations-1)
+frac(pB,pC,ratio,iterations-1)
+frac(pC,p1,ratio,iterations-1)
+}
+else
+{
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(pA.x,pA.y);
+context.lineTo(pB.x,pB.y);
+context.lineTo(pC.x,pC.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+
+}
+
+}
+else if(ratio==2)
+{
+
+var tempx=0;
+var tempy=0;
+var fractArray = [];
+
+var line = lineFactory(50,80,200,80, 0);
+context.beginPath();
+    context.moveTo(50,10);
+    context.lineTo(200,10);
+    context.lineWidth=document.getElementById("width").value;
+    context.strokeStyle=document.getElementById("color").value;
+    context.stroke();
+
+//alert(line.x1);
+twoFractal(line, iterations);
+
+function drawLine(x,y,lineLength,deg){
+    deg = (deg-360)%360
+    tempx = x+lineLength *Math.cos(deg *Math.PI/180);
+    tempy = y+lineLength *Math.sin(deg *Math.PI/180);
+    fractArray.push(lineFactory(x,y+100,tempx,tempy+100,deg))
+
+    context.beginPath();
+    context.moveTo(x,y);
+    context.lineTo(tempx,tempy);
+    context.lineWidth=document.getElementById("width").value;
+    context.strokeStyle=document.getElementById("color").value;
+    context.stroke()
+}
+function lineFactory(x1,y1,x2,y2,degrees){
+    var obj = {};
+    obj.x1 = x1
+    obj.x2 = x2
+    obj.y1 = y1
+    obj.y2 = y2
+    obj.degrees = degrees
+
+    return obj;
+}
+
+function twoFractal(lineObj, iteration){
+//alert("inside 2");
+    var len = 0;
+    for(var j=0; j<iteration; j++){
+        len = len+Math.pow(4,j)
+    }
+
+    fractArray.push(lineObj);
+//alert(fractArray[0]);
+
+    for(var i = 0; i<len; i++){
+        fractal(fractArray[i]);
+    }
+
+    function fractal(obj){
+        x1 = obj.x1
+        y1 = obj.y1
+        x2 = obj.x2
+        y2 = obj.y2
+        degrees = obj.degrees
+    
+        var dx = Math.pow ((x1-x2),2),
+        dy = Math.pow ((y1-y2),2),
+        dist = Math.sqrt(dx+dy),
+        lineLength = dist/2;    
+
+        //ctx.strokeStyle = document.querySelector('input[name = "color"]:checked').value;
+        
+        drawLine(x1,y1,lineLength,degrees+60);   
+        drawLine(tempx,tempy,lineLength,degrees-60,);
+        drawLine(tempx,tempy,lineLength,degrees-60);
+        drawLine(tempx,tempy,lineLength,degrees+60);        
+    }
+
+
+
+
+}
+}
+}
+
+
+
+function triangle(){
+
+erase();
+
+var p0 = {
+     x: 0,
+     y: -321
+},
+p1 = { 
+     x: 278,
+     y: 160
+};
+p2 = { 
+     x: -278,
+     y: 160
+};
+
+var ratio=document.getElementById("rat").value;
+var iterations= document.getElementById("itr").value;
+
+context.translate(width/2, height/2);
+
+frac(p0,p1,ratio,iterations);
+frac(p1,p2,ratio,iterations);
+frac(p2,p0,ratio,iterations);
+
+function frac(p0,p1,ratio,iterations) {
+
+if(iterations==0){
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+
+}
+
+else if(ratio < 3)
+{
+alert("Enter ratio above 2");
+alert("Click Clear");
+}
+
+else if(ratio > 2)
+{
+var dx = parseInt(p1.x - p0.x),
+dy= parseInt(p1.y-p0.y),
+dist = parseInt(Math.sqrt( dx * dx + dy* dy)),
+unit = parseInt(dist /ratio) ,
+angle = Math.atan2(dy,dx),
+pA= { 
+   x: parseInt(p0.x + dx/ratio),
+   y: parseInt(p0.y + dy/ratio)
+    },
+pC= {
+   x: parseInt(p1.x - dx/ratio),
+   y:parseInt(p1.y - dy/ratio)
+},
+
+pB= {
+    x:  parseInt(pA.x + Math.cos(angle - Math.PI / ratio) * unit),
+    y: parseInt(pA.y + Math.sin(angle - Math.PI / ratio ) * unit)
+
+}; 
+
+
+if(iterations > 1){
+frac(p0,pA,ratio,iterations-1)
+frac(pA,pB,ratio,iterations-1)
+frac(pB,pC,ratio,iterations-1)
+frac(pC,p1,ratio,iterations-1)
+}
+
+else
+{
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(pA.x,pA.y);
+context.lineTo(pB.x,pB.y);
+context.lineTo(pC.x,pC.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+} 
+}
+} 
+
+
+
+}
+
+function square()
+{
+erase();
+
+var p0 = {
+     x: 278,
+     y: 80
+},
+p1 = { 
+     x: -278,
+     y: 80
+};
+p2 = { 
+     x: 278,
+     y: -160
+};
+p3 = { 
+     x: -278,
+     y: -160
+};
+
+
+var ratio=document.getElementById("rat").value;
+var iterations= document.getElementById("itr").value;
+
+context.translate(width/2, height/2);
+
+frac(p0,p1,ratio,iterations);
+frac(p1,p3,ratio,iterations);
+frac(p3,p2,ratio,iterations);
+frac(p2,p0,ratio,iterations);
+
+function frac(p0,p1,ratio,iterations) {
+
+if(iterations==0){
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+
+}
+
+else if(ratio < 3)
+{
+alert("only designed for ratio above 2");
+//alert("Click Clear");
+}
+
+else if(ratio > 2)
+{
+var dx = parseInt(p1.x - p0.x),
+dy= parseInt(p1.y-p0.y),
+dist = parseInt(Math.sqrt( dx * dx + dy* dy)),
+unit = parseInt(dist /ratio) ,
+angle = Math.atan2(dy,dx),
+pA= { 
+   x: parseInt(p0.x + dx/ratio),
+   y: parseInt(p0.y + dy/ratio)
+    },
+pC= {
+   x: parseInt(p1.x - dx/ratio),
+   y:parseInt(p1.y - dy/ratio)
+},
+
+pB= {
+    x:  parseInt(pA.x + Math.cos(angle - Math.PI / ratio) * unit),
+    y: parseInt(pA.y + Math.sin(angle - Math.PI / ratio ) * unit)
+
+}; 
+
+
+if(iterations > 1){
+frac(p0,pA,ratio,iterations-1)
+frac(pA,pB,ratio,iterations-1)
+frac(pB,pC,ratio,iterations-1)
+frac(pC,p1,ratio,iterations-1)
+}
+
+else
+{
+context.beginPath();
+context.moveTo(p0.x,p0.y);
+context.lineTo(pA.x,pA.y);
+context.lineTo(pB.x,pB.y);
+context.lineTo(pC.x,pC.y);
+context.lineTo(p1.x,p1.y);
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+} 
+}
+} 
+
+}
+
+function arc()
+{
+var num;
+//var form = document.getElementById("drawFractal");
+//ctx.strokeStyle = document.querySelector('input[name = "color"]:checked').value;
+
+
+var fractalArcArray = [];
+initArc = {
+    midX:75,
+    midY:75,
+    sAngle:180,
+    eAngle:0,
+    rad:50,
+    dir:false
+}
+
+
+fractalArcArray.push(initArc);
+
+//form.addEventListener("submit", function(e){
+    //e.preventDefault();
+    //clearScreen();
+    var iteration = document.getElementById("itr").value;
+    if (iteration==1){
+        num = Math.pow(4,iteration-1);
+    }
+    else if(iteration==2){
+        num = Math.pow(4,iteration-1);
+        
+    }
+else if(iteration==3){
+        num = Math.pow(4,iteration-1);
+        
+    }
+else if(iteration==4){
+        num = Math.pow(4,iteration-1);
+        
+    }
+else if(iteration==5){
+        num = Math.pow(4,iteration-1);
+        
+    }
+else if(iteration==6){
+        num = Math.pow(4,iteration-1);
+        
+    }
+
+    drawArc(initArc,false);
+    for(var i=0; i<num;i++){
+        fractalArc(fractalArcArray[i]);
+    }
+
+
+
+
+
+function getDistance(x1,y1,x2,y2){
+    x = Math.pow((x1-x2),2);
+    y = Math.pow((y1-y2),2);
+    return Math.sqrt(x+y);
+}
+
+// angle in radians
+function getAngle(x1,y1,x2,y2){
+    return Math.atan2(y2 - y1, x2 - x1)* 180 / Math.PI;
+}
+
+
+function fractalArc(arcObj){
+    var x=arcObj.midX,
+    y=arcObj.midY,
+    radius=arcObj.rad,
+    sAngle=(arcObj.sAngle)%360,
+    eAngle=(arcObj.eAngle)%360;
+
+    var a = sAngle+1/3*(eAngle-sAngle);
+    var b = sAngle+2/3*(eAngle-sAngle);
+
+    if((eAngle<sAngle)&&arcObj.dir){
+        a=a-180;
+        b=b-180;
+        temp = a;
+            a=b;
+            b=temp;
+    }
+    if(!arcObj.dir){
+        a+=180;
+        b+=180;
+        temp = a;
+        a=b;
+        b=temp;
+    }
+    else{
+        a-=180;
+        b-=180;
+        temp = a;
+        a=b;
+        b=temp;
+    }
+
+    
+
+    
+
+    console.log(a,b)
+
+    var x1 = (x + radius*(Math.cos(a*(Math.PI/180))));
+    var y1 = (y + radius*(Math.sin(a*(Math.PI/180))))+100;
+
+    var y2 = (y + radius*(Math.sin(b*(Math.PI/180))))+100;
+    var x2 = (x + radius*(Math.cos(b*(Math.PI/180))));
+
+    var ox = (x + radius*(Math.cos(sAngle*(Math.PI/180))));
+    var oy = (y + radius*(Math.sin(sAngle*(Math.PI/180))))+100;
+
+    var ex = (x + radius*(Math.cos(eAngle*(Math.PI/180))));
+    var ey = (y + radius*(Math.sin(eAngle*(Math.PI/180))))+100;
+
+    subArc1 = getArcObject(ox,oy,x1,y1,true);
+    subArc2 = getArcObject(x1,y1,x2,y2,false);
+    subArc3 = getArcObject(x2,y2,ex,ey,true);
+
+    fractalArcArray.push(subArc1);
+    fractalArcArray.push(subArc2);
+    fractalArcArray.push(subArc3);
+
+    drawArc(subArc1,true);
+    drawArc(subArc2,false);
+    drawArc(subArc3,true);
+}
+
+function getArcObject(x1,y1,x2,y2,dir){
+    var obj = {};
+    obj.midX = (x1+x2)/2;
+    obj.midY = (y1+y2)/2;
+    obj.sAngle = getAngle(obj.midX,obj.midY,x1,y1);
+    obj.sAngle = (obj.sAngle<=0) ? obj.sAngle+360 : obj.sAngle;
+    
+    obj.eAngle = getAngle(obj.midX,obj.midY,x2,y2);
+    obj.eAngle = (obj.eAngle<=0) ? obj.eAngle+360 : obj.eAngle;
+
+    obj.rad = getDistance(obj.midX,obj.midY,x1,y1);
+    obj.dir=dir;
+
+    return obj;
+}
+
+function drawArc(arcObj, dir){
+    console.log(arcObj);
+    //context.strokeStyle = document.querySelector('input[name = "color"]:checked').value;
+    context.beginPath();
+    context.arc(
+        arcObj.midX,
+        arcObj.midY,
+        arcObj.rad,
+        (arcObj.sAngle)*(Math.PI/180),
+        (arcObj.eAngle)*(Math.PI/180),
+        dir
+    );
+context.lineWidth=document.getElementById("width").value;
+context.strokeStyle=document.getElementById("color").value;
+    context.stroke();
+}
+}
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+
+ <head>
+
+  <title>
+  Drivers
+  </title>
+
+</head>
+
+ <body background="marble.jpg">
+
+<h1 style="font-size:150%;color:black;text-align:left;"> Driver's Wheels</h1>
+
+<form style="font-size:70%;color:black;text-align:left;">
+
+<b> Enter the X-coordinate: </b> <input type="number" id="X" value="150" >
+  <b> Enter the Y-coordinate: </b> <input type="number" id="Y" value="150"><br>
+  <br>
+<b> Radius: </b> <input type="number" id="radius" value="100">
+<b> Score: </b> <input type="number" id="score" >
+<br/><br/>
+
+<b> Border Width: </b>
+<input type="number" id="wid" value="1">
+
+ </br>
+<label> <b>Color Picker:</b> </label><input type="color" id="color" value="#ff0000">
+
+<br><br>
+<strong> <input type="button" value="DRAW" onclick="draw()" style="font-size:80%;color:black;"> </strong>
+<strong> <input type="button" value="CLEAR" onclick="erase()"style="font-size:80%;color:black;"></strong></form>
+<canvas id="Canvas" width="1400" height="500" style="border:2px solid black; background-color:white;" >
+</canvas>
+
+<script>
+//this is done by Saivenkat Thatikonda
+var canvas=document.getElementById("Canvas");
+var context= canvas.getContext('2d');
+//This is a program used to design the wheel of a driver based on his score
+function draw() {
+//this draw function is invoked when draw is pressed in the interface
+var x=document.getElementById("X").value;
+var y=document.getElementById("Y").value;
+var radius=document.getElementById("radius").value;
+var score=document.getElementById("score").value;
+
+if(score==100)
+{
+//if score is 100 the wheel should be a whole circle
+    context.beginPath();
+    context.arc(x, y, radius, 0, Math.PI * 2);
+    context.lineWidth=document.getElementById("wid").value;
+    context.strokeStyle=document.getElementById("favcolor").value;
+//alert(document.getElementById("favcolor").value);
+    context.stroke();
+}
+
+else if(score<100 && score>=80)
+{
+//if the score of the driver is between 81 and 99 then the wheel should be in the shape of an ellipse
+
+var d=100-score;
+var radius1=radius-((d*radius)/100);
+context.beginPath();
+context.ellipse(x,y,radius,radius1,0, 0, 2 * Math.PI);
+context.lineWidth=document.getElementById("wid").value;
+context.strokeStyle=document.getElementById("favcolor").value;
+context.stroke();
+}
+
+else if(score>=4 && score<=79)
+{
+//if the score is between
+//4 and 79 //
+//then it should be a polygon with that many sides
+var numSides = score;
+var xCenter = parseInt(x);
+var yCenter = parseInt(y);
+context.clearRect(0,0,canvas.width,canvas.height);
+context.beginPath();
+var xPos = xCenter + radius * Math.cos(2 * Math.PI * 0 / numSides);
+var yPos = yCenter + radius * Math.sin(2 * Math.PI * 0 / numSides);
+context.moveTo(xPos,yPos);
+for (i = 1; i <= numSides; i++) {
+xPos = xCenter + radius * Math.cos(2 * Math.PI * i / numSides);
+yPos = yCenter + radius * Math.sin(2 * Math.PI * i / numSides);
+context.lineTo(xPos,yPos);
+}
+context.closePath();
+context.lineWidth=document.getElementById("wid").value;
+context.strokeStyle=document.getElementById("color").value;
+context.stroke();
+}
+
+else
+{
+alert("Score can't be less than 4");
+}
+
+}
+
+function erase() {
+context.clearRect(0,0,Canvas.width,Canvas.height);
+}
+
+function one()
+{
+
+}
+
+</script>
+
+</body>
+</html>
