@@ -1,0 +1,101 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    margin: 0;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 25%;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+li a {
+    display: block;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+</style>
+</head>
+<body background="marble.jpg">
+        
+
+        <h1>              3D View of my Dream House   (Click on the Door or window for opening and closing them</h1>
+
+<ul>
+
+
+  <li><a class="active" href="home.html">Home</a></li>
+  <li><a href="house.html">Front View of The House</a></li>
+  <li><a href="top view.html">Top View of The house</a></li>
+  <li><a href="side view.html">Side View of the House</a></li>
+</ul>
+
+<div style="margin-left:25%;padding:1px 16px;height:1000px;">      
+    
+    <link rel="stylesheet" href="three.css">
+    
+    <input type="checkbox" id="D"/>
+    <input type="checkbox" id="W1"/>
+    <input type="checkbox" id="W2"/>
+    <input type="checkbox" id="W3"/>
+    <div id="container">
+      <div id="wrap">
+        <div id="ground">
+          <div id="house">
+            
+            <div id="walls">
+              <div></div>
+              <div></div>
+              <svg viewBox="0 0 50 55"><path d="m0,55h18v-26h14v26h18v-30l-25,-25-25,25z" fill="#BBB"/></svg>
+              <svg viewBox="0 0 50 55"><path d="m0,55h50v-30l-25,-25-25,25zm7,-25h15v15h-15zm21,0h15v15h-15z" fill-rule="evenodd" fill="#CCC"/></svg>
+              <div class="open">
+                <div><label id="door" for="D"></label></div>
+                <div><label id="window1" for="W1"></label></div>
+                <div><label id="window2" for="W2"></label></div>
+              </div>
+            </div>
+            
+            <div id="roof">
+              <div></div>
+              <svg viewBox="0 0 50 35.36"><path d="m0,0h50v35.36h-50zm20,15h10v15h-10z" fill-rule="evenodd"/></svg>
+              <div class="open">
+                <div><label id="window3" for="W3"></label></div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <svg>
+      <defs>
+        <pattern id="pattern" patternUnits="userSpaceOnUse" width="11" height="11">
+          <image xlink:href="https://s-media-cache-ak0.pinimg.com/736x/75/d4/28/75d42817a3c36f0da00b9ef37b6bcafa.jpg" x="0" y="0" width="11" height="11" />
+        </pattern>
+      </defs>
+    </svg>
+    
+      </div>
+</body>
+</html>

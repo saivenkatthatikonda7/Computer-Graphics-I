@@ -1,0 +1,21 @@
+svg {
+  width: 100%;
+}
+
+.house {
+  background: #7CFEF0;
+}
+
+rect,
+circle,
+.circlegroup,
+polygon {
+  transition: all 0.5s ease;
+}
+
+polygon:hover,
+rect:hover,
+circle:hover,
+.circlegroup:hover {
+  fill: #624CAB;
+}
